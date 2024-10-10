@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Boutique - Calculadora de Moda, Média e Mediana</title>
+    <link href="style.css" rel="stylesheet">
+    <style>
+        /* Estilo para os botões lado a lado */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coffee Boutique</h1>
+    
+    <form id="data-form">
+        <input type="text" id="data-input" name="data-input" placeholder="Insira os dados separados por vírgula">
+        <button type="submit">Calcular</button>
+        <p id="error-message"></p>
+    </form>
+    
+    <div id="results">
+        <div class="result-item"><strong>Moda:</strong> <span id="mode-value"></span></div>
+        <div class="result-item"><strong>Média:</strong> <span id="mean-value"></span></div>
+        <div class="result-item"><strong>Mediana:</strong> <span id="median-value"></span></div>
+    </div>
+
+    <div class="button-container">
+        <button id="redirect-survey">Faça parte da nossa pesquisa de satisfação!</button>
+        <button id="show-results">Confira o resultado da nossa pesquisa!</button>
+    </div>
+    
+    <footer>
+        © 2024 Coffee Boutique - CEO´s: Anthony William, Kassio Alexandre, Mariana Meireles, Juan Pablo e Gabriely Jacques.
+    </footer>
+
+    <script>
+        const form = document.getElementById('data-form');
+        const dataInput = document.getElementById('data-input');
+        const modeValue = document.getElementById('mode-value');
+        const meanValue = document.getElementById('mean-value');
+        const medianValue = document.getElementById('median-value');
+        const errorMessage = document.getElementById('error-message');
+        const resultsDiv = document.getElementById('results');
+        const redirectSurvey = document.getElementById('redirect-survey');
+        const showResultsButton = document.getElementById('show-results');
+
+        function typeEffect(element, text, speed = 50) {
+            let i = 0;
+            element.textContent = '';
+            const typing = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text[i];
+                    i++;
+                } else {
+                    clearInterval(typing);
+                }
+            }, speed);
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            errorMessage.textContent = '';
+            resultsDiv.classList.remove('show');
+            const data = dataInput.value.split(',').map(item => item.trim());
+
+            if (!validateData(data)) {
+                errorMessage.textContent = 'Por favor, insira apenas números válidos separados por vírgula.';
+                return;
+            }
+
+            const numbers = data.map(Number);
+            typeEffect(modeValue, `Moda: ${getMode(numbers)}`);
+            typeEffect(meanValue, `Média: ${getMean(numbers).toFixed(2)}`);
+            typeEffect(medianValue, `Mediana: ${getMedian(numbers).toFixed(2)}`);
+            setTimeout(() => resultsDiv.classList.add('show'), 300);
+        });
+
+        const validateData = (data) => data.every(item => !isNaN(item) && item !== '');
+
+        const getMode = (numbers) => {
+            const frequency = numbers.reduce((acc, num) => (acc[num] = (acc[num] || 0) + 1, acc), {});
+            const maxFrequency = Math.max(...Object.values(frequency));
+            const modes = Object.keys(frequency).filter(key => frequency[key] === maxFrequency);
+            return modes.length > 1 ? `Múltiplas modas: ${modes.join(', ')}` : modes[0];
+        };
+
+        const getMean = (numbers) => numbers.reduce((acc, num) => acc + num, 0) / numbers.length;
+
+        const getMedian = (numbers) => {
+            numbers.sort((a, b) => a - b);
+            const mid = Math.floor(numbers.length / 2);
+            return numbers.length % 2 !== 0 ? numbers[mid] : (numbers[mid - 1] + numbers[mid]) / 2;
+        };
+
+        redirectSurvey.addEventListener('click', () => {
+            window.location.href = 'https://forms.gle/G58vrHvEer5eKyjr5';
+        });
+
+        showResultsButton.addEventListener('click', () => {
+            // Redireciona para a página de resultados
+            window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLScUVLQk489nQSZje8LqURNQRFF8kamIpLCASfICSVBpEmoSvg/viewanalytics'; // Substitua pelo link desejado
+        });
+    </script>
+</body>
+</html>
