@@ -1,1 +1,1 @@
-Projeto inovador d4e calculadora cientifica.
+Projeto inovador de calculadora cientifica.
